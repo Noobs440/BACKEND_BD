@@ -1,4 +1,7 @@
 package com.projectdb.academic_service.controller;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import jakarta.validation.Valid;
 
 import com.projectdb.academic_service.dto.DepartmentDTO;
 import com.projectdb.academic_service.model.Department;
@@ -25,24 +28,30 @@ public class DepartmentController {
     Department department = new Department();
     department.setName(departmentDTO.getName());
 
-    Department created = service.createDepartment(department);
-    return ResponseEntity.ok(created);
+    Department created = service.createDepartment(departmentDTO);
+    return ResponseEntity.ok(new DepartmentDTO(created));
 }
-
     @GetMapping
-    public List<Department> getAll() {
-        return service.getAll();
+    public List<DepartmentDTO> getAll() {
+        return service.getAll().stream()
+                .map(DepartmentDTO::new)
+                .toList();
     }
+
 
     @GetMapping("/{id}")
-    public Department getById(@PathVariable Long id) {
-        return service.getById(id);
+    public DepartmentDTO getById(@PathVariable Long id) {
+        Department department = service.getById(id);
+        return new DepartmentDTO(department);
     }
 
+
     @PutMapping("/{id}")
-    public Department update(@PathVariable Long id, @RequestBody DepartmentDTO dto) {
-        return service.updateDepartment(id, dto);
+    public DepartmentDTO update(@PathVariable Long id, @RequestBody DepartmentDTO dto) {
+        Department updated = service.updateDepartment(id, dto);
+        return new DepartmentDTO(updated);
     }
+
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {

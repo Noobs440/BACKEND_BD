@@ -1,5 +1,6 @@
 package com.projectdb.academic_service.service;
 
+import com.projectdb.academic_service.exception.DepartmentAlreadyExistsException;
 import com.projectdb.academic_service.dto.DepartmentDTO;
 import com.projectdb.academic_service.model.Department;
 import com.projectdb.academic_service.repository.DepartmentRepository;
