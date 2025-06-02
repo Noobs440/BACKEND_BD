@@ -1,5 +1,6 @@
 package com.projectdb.academic_service.controller;
 
+import com.projectdb.academic_service.dto.DepartmentDTO;
 import com.projectdb.academic_service.model.Department;
 import com.projectdb.academic_service.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,18 @@ public class DepartmentController {
     private DepartmentService service;
 
     @PostMapping
-    public Department create(@RequestBody Department department) {
-        return service.createDepartment(department);
+    public ResponseEntity<?> create(@Valid @RequestBody DepartmentDTO departmentDTO, BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+        String errorMessage = bindingResult.getFieldError().getDefaultMessage();
+        return ResponseEntity.badRequest().body(errorMessage);
     }
+
+    Department department = new Department();
+    department.setName(departmentDTO.getName());
+
+    Department created = service.createDepartment(department);
+    return ResponseEntity.ok(created);
+}
 
     @GetMapping
     public List<Department> getAll() {
@@ -27,6 +37,11 @@ public class DepartmentController {
     @GetMapping("/{id}")
     public Department getById(@PathVariable Long id) {
         return service.getById(id);
+    }
+
+    @PutMapping("/{id}")
+    public Department update(@PathVariable Long id, @RequestBody DepartmentDTO dto) {
+        return service.updateDepartment(id, dto);
     }
 
     @DeleteMapping("/{id}")
